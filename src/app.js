@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import fileUpload from "express-fileupload";
 import cors from "cors"
+import createHttpError from "http-errors";
+import routes from "./routes/index.js"
 
 // dotenv congig
 dotenv.config();
@@ -45,9 +47,20 @@ app.use(fileUpload({
 // Cors : this middleware to protect and restrict access to the server.
 app.use(cors())
 
-app.post("/",(req,res)=>{
-    console.log(req.body);
-    res.send(req.body)
+// api v1 routes 
+
+app.use("/api/v1", routes)
+
+
+// http Error handling middleware
+app.use(async(err,req,res,next)=>{
+   res.status(err.status || 500);
+   res.send({
+    error:{
+        status: err.status || 500,
+        message: err.message,
+    }
+   }) 
 })
 
 export default app;
