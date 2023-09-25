@@ -60,3 +60,10 @@ process.on("SIGTERM", ()=>{
         process.exit(1)
      }
 })
+
+// unmatch routes handling 
+app.all("*",function(req,res){
+   res.status(404)
+ 
+   res.end(JSON.stringify("This routes not found"))
+});
