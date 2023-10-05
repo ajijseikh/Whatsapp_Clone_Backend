@@ -11,6 +11,7 @@ export const doesConversationExist = async (sender_id, receiver_id) => {
   })
     .populate("users", "-password")
     .populate("latestMessage");
+
   if (!convos)
     throw createHttpError.BadRequest("Oops.. Something went wrong !");
   // Populate message model
@@ -18,9 +19,11 @@ export const doesConversationExist = async (sender_id, receiver_id) => {
     path: "latestMessage.sender",
     select: "name email picture status",
   });
+
   return convos[0];
 };
 
+// createConversation
 export const createConversation = async (data) => {
   const newConvo = await ConversationModel.create(data);
   if (!newConvo)
@@ -33,15 +36,20 @@ export const populatedConversation = async (
   fieldToPopulate,
   fieldsToRemove
 ) => {
+ 
   const populateConve = await ConversationModel.findOne({ _id: id }).populate(
     fieldToPopulate,
     fieldsToRemove
   );
+ 
   if(!populateConve)  throw createHttpError.BadRequest("oops.. something went wrong !");
   return populateConve;
 };
 
+// getUserConversations
 export const getUserConversations = async(user_id)=>{
+
+  // console.log("user_id",user_id);
   let conversations;
   await ConversationModel.find({
     users:{$elemMatch:{$eq:user_id}},
@@ -51,9 +59,10 @@ export const getUserConversations = async(user_id)=>{
   .populate("latestMessage")
   .sort({updatedAt:-1})
   .then(async(results)=>{
+  
     results=await UserModel.populate(results,{
       path:"latestMessage.sender",
-      select:"name email picture status",
+      select:"name email picture status ",
     })
     conversations=results
   })

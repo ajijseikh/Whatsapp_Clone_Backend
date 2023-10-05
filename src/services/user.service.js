@@ -8,14 +8,17 @@ export const findUser=async(userId)=>{
 }
 
 
-export const serachUsers=async(keyword)=>{
+export const serachUsers=async(keyword,userId)=>{
    const users=await UserModel.find({
    $or:[
    { name:{$regex:keyword, $options:"i"}},
    { email:{$regex:keyword, $options:"i"}},
 
    ]
+   }).find({
+    _id:{$ne:userId}
    })
+//    console.log("user",users);
    return users
 }
 

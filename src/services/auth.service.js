@@ -67,6 +67,7 @@ export const createUser = async (userData) => {
     status: status || DEFAULT_STATUS,
     password,
   }).save();
+
   return user;
 };
 
